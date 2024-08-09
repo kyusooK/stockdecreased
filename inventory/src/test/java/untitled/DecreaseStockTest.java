@@ -50,10 +50,20 @@ public class DecreaseStockTest {
     private ApplicationContext applicationContext;
 
     @Autowired
+    private InventoryRepository repository;
+
+    @Autowired
     ObjectMapper objectMapper;
 
     @Autowired
     private MessageVerifier<Message<?>> messageVerifier;
+
+    private Inventory entity;
+
+    @Before
+    public void setup() {
+        entity = new Inventory();
+    }
 
     @Test
     @SuppressWarnings("unchecked")
@@ -61,7 +71,7 @@ public class DecreaseStockTest {
         //given:
 
         entity.setId(1L);
-        entity.setStock(10L);
+        entity.setStock(10);
         entity.setProductName("초코파이");
 
         repository.save(entity);
@@ -103,14 +113,14 @@ public class DecreaseStockTest {
             assertNotNull("Resulted event must be published", receivedMessage);
 
             StockDecreased outputEvent = objectMapper.readValue(
-                receivedMessage.getPayload(),
+                (String) receivedMessage.getPayload(),
                 StockDecreased.class
             );
 
             LOGGER.info("Response received: {}", receivedMessage.getPayload());
 
-            assertEquals(outputEvent.getId(), 1L);
-            assertEquals(outputEvent.getStock(), 9L);
+            assertEquals(outputEvent.getId().longValue(), 1L);
+            assertEquals(outputEvent.getStock().intValue(), 9);
             assertEquals(outputEvent.getProductName(), "초코파이");
         } catch (JsonProcessingException e) {
             // TODO Auto-generated catch block
