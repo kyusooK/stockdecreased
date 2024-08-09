@@ -14,3 +14,4 @@ github/workflows -> .github/workflows
 
 3. Select of "Read and write Permissions."
 <img width="903" alt="setting3" src="https://github.com/sooheon45/topping-github-action/assets/54785805/fe562497-e860-4d8b-9d5a-f189ef3dce8d">
+
