@@ -1,0 +1,27 @@
+name: test
+run-name: testing 
+on: [push]
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Prepare Test Environment
+      run: |
+        cd inventory
+        mkdir -p ignore_test_file
+        mv src/test/java/untitled/*.java ignore_test_file/
+        mv ignore_test_file/DecreaseStockTest.java src/test/java/untitled/
+    - name: Compile and Run Specific Test
+      run: |
+        cd inventory
+        mvn test-compile
+        mvn test -Dtest=untitled.DecreaseStockTest
+    - name: Restore Test Files
+      if: always()
+      run: |
+        cd inventory
+        mv ignore_test_file/*.java src/test/java/untitled/
+        rm -rf ignore_test_file
