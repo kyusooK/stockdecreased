@@ -68,18 +68,12 @@ public class DecreaseStockTest {
     @Test
     @SuppressWarnings("unchecked")
     public void test0() {
-        //given:
-
         entity.setId(1L);
         entity.setStock(10);
         entity.setProductName("초코파이");
-
         repository.save(entity);
 
-        //when:
-
         OrderPlaced event = new OrderPlaced();
-
         event.setId(1L);
         event.setProductId("P001");
         event.setUserId("U001");
@@ -101,24 +95,19 @@ public class DecreaseStockTest {
                     "untitled"
                 );
 
-            //then:
-
             Message<?> receivedMessage =
                 this.messageVerifier.receive(
                         "untitled",
                         5000,
                         TimeUnit.MILLISECONDS
                     );
-
             assertNotNull("Resulted event must be published", receivedMessage);
-
             StockDecreased outputEvent = objectMapper.readValue(
                 (String) receivedMessage.getPayload(),
                 StockDecreased.class
             );
 
             LOGGER.info("Response received: {}", receivedMessage.getPayload());
-
             assertEquals(outputEvent.getId().longValue(), 1L);
             assertEquals(outputEvent.getStock().intValue(), 9);
             assertEquals(outputEvent.getProductName(), "초코파이");
