@@ -28,8 +28,13 @@ public class Inventory {
     }
 
     public static void decreaseStock(OrderPlaced orderPlaced) {
-        repository().findById(orderPlaced.getId()).ifPresent(inventory -> {
-            inventory.setStock(inventory.getStock() - 1);
-            repository().save(inventory);
-            StockDecreased stockDecreased = new StockDecreased(inventory);
-            stockDecreased
+        repository()
+            .findById(orderPlaced.getId())
+            .ifPresent(inventory -> {
+                inventory.setStock(inventory.getStock() - 1);
+                repository().save(inventory);
+                StockDecreased stockDecreased = new StockDecreased(inventory);
+                stockDecreased.publishAfterCommit();
+            });
+    }
+}
